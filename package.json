@@ -10,9 +10,7 @@
     "elm:install": "elm-app install",
     "start": "elm-app start",
     "build": "elm-app build",
-    "test": "elm-app test",
-    "deploy": "firebase deploy --token \"$FIREBASE_TOKEN\"",
-    "predeploy": "firebase use default --token \"$FIREBASE_TOKEN\""
+    "test": "elm-app test"
   },
   "repository": {
     "type": "git",
