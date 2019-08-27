@@ -12,7 +12,7 @@
     "build": "elm-app build",
     "test": "elm-app test",
     "deploy": "firebase deploy --token \"$FIREBASE_TOKEN\"",
-    "firebase": "firebase"
+    "predeploy": "firebase use default --token \"$FIREBASE_TOKEN\""
   },
   "repository": {
     "type": "git",
