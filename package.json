@@ -10,7 +10,8 @@
     "elm:install": "elm-app install",
     "start": "elm-app start",
     "build": "elm-app build",
-    "test": "elm-app test"
+    "test": "elm-app test",
+    "deploy": "firebase deploy --token \"$FIREBASE_TOKEN\""
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
   },
   "homepage": "https://github.com/adwd/saito-sensei#readme",
   "devDependencies": {
-    "create-elm-app": "^3.2.1"
+    "create-elm-app": "^3.2.1",
+    "firebase-tools": "^7.2.4"
   }
 }
