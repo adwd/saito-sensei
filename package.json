@@ -11,7 +11,8 @@
     "start": "elm-app start",
     "build": "elm-app build",
     "test": "elm-app test",
-    "deploy": "firebase deploy --token \"$FIREBASE_TOKEN\""
+    "deploy": "firebase deploy --token \"$FIREBASE_TOKEN\"",
+    "firebase": "firebase"
   },
   "repository": {
     "type": "git",
