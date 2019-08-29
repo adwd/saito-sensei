@@ -42,8 +42,8 @@ jobs:
         npm install
         npm run elm:install
         npm run build --if-present
-        npx firebase use $PROJECT_ID --token $FIREBASE_TOKEN
-        npx firebase deploy --token $FIREBASE_TOKEN
+        npm run firebase -- use $PROJECT_ID --token $FIREBASE_TOKEN
+        npm run firebase -- deploy --token $FIREBASE_TOKEN
       env:
         FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         PROJECT_ID: ${{ secrets.PROJECT_ID }}
