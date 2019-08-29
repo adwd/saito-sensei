@@ -11,7 +11,6 @@ port module Main exposing
     )
 
 import Browser
-import Debug
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -69,10 +68,10 @@ update msg model =
             ( { model | isSignedIn = isSignedIn }, Cmd.none )
 
         SignInSuccess message ->
-            ( { model | signInResult = Debug.log "succeeed" message }, Cmd.none )
+            ( { model | signInResult = message }, Cmd.none )
 
         SignInFailure message ->
-            ( { model | signInResult = Debug.log "failure" message }, Cmd.none )
+            ( { model | signInResult = message }, Cmd.none )
 
 
 
