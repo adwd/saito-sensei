@@ -7,10 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "elm:install": "elm-app install",
-    "start": "elm-app start",
-    "build": "elm-app build",
-    "test": "elm-app test"
+    "elm-cli": "node node_modules/create-elm-app/bin/elm-app-cli.js",
+    "elm:install": "npm run elm-cli -- install",
+    "start": "npm run elm-cli -- start",
+    "build": "npm run elm-cli -- build",
+    "test": "npm run elm-cli -- test"
   },
   "repository": {
     "type": "git",
