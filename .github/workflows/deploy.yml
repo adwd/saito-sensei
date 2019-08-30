@@ -40,7 +40,6 @@ jobs:
     - name: npm install, build, and deploy
       run: |
         npm install
-        npm run elm:install
         npm run build --if-present
         npm run firebase -- use --add "$PROJECT_ID" --token "$FIREBASE_TOKEN"
         npm run firebase -- deploy --token "$FIREBASE_TOKEN"
