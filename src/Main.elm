@@ -11,9 +11,13 @@ port module Main exposing
     )
 
 import Browser
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Debug
+import Element exposing (..)
+import Element.Background as Background
+import Element.Border as Border
+import Element.Font as Font
+import Element.Input as Input
+import Html
 
 
 
@@ -78,17 +82,39 @@ update msg model =
 ---- VIEW ----
 
 
-view : Model -> Html Msg
-view { isSignedIn, signInResult } =
-    div [ class "container" ]
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Saito Sensei is working!" ]
-        , button [ onClick SignIn ] [ text "Google サインイン" ]
-        , if isSignedIn then
-            text signInResult
+view : Model -> Html.Html Msg
+view model =
+    Element.layout [] (senseiApp model)
+
+
+senseiApp : Model -> Element Msg
+senseiApp model =
+    column [ width fill, Element.explain Debug.todo ]
+        [ senseiHeader
+        , senseiContent model
+        ]
+
+
+senseiHeader : Element Msg
+senseiHeader =
+    row [ width fill, padding 20 ]
+        [ el [ centerX ] (text "header")
+        ]
+
+
+senseiContent : Model -> Element Msg
+senseiContent model =
+    column [ width fill, padding 20 ]
+        [ image [ width (px 128), padding 20 ] { src = "/logo.svg", description = "logo" }
+        , el [] (text "Saito Sensei")
+        , Input.button [] { label = text "sign in", onPress = Just SignIn }
+        , if model.isSignedIn then
+            paragraph []
+                [ text model.signInResult
+                ]
 
           else
-            text ""
+            none
         ]
 
 
