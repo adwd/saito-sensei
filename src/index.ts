@@ -1,5 +1,5 @@
 import './main.css';
-import { Elm } from './Main.elm';
+import { Elm } from './Main';
 import * as serviceWorker from './serviceWorker';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
@@ -10,10 +10,12 @@ const firebaseApp = firebase.initializeApp({
   databaseURL: "https://saito-sensei.firebaseio.com",
   projectId: "saito-sensei",
 });
+
 const provider = new firebase.auth.GoogleAuthProvider();
 
 const app = Elm.Main.init({
-  node: document.getElementById('root')
+  node: document.getElementById('root'),
+  flags: null,
 });
 
 firebase.auth().onAuthStateChanged(user => {
