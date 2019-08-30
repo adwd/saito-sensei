@@ -89,7 +89,7 @@ view model =
 
 senseiApp : Model -> Element Msg
 senseiApp model =
-    column [ width fill, Element.explain Debug.todo ]
+    column [ width fill ]
         [ senseiHeader
         , senseiContent model
         ]
