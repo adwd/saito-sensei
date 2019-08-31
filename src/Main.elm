@@ -98,7 +98,7 @@ senseiApp model =
 senseiHeader : Element Msg
 senseiHeader =
     row [ width fill, padding 20 ]
-        [ el [ centerX ] (text "header")
+        [ el [ centerX ] (text "sensei")
         ]
 
 
@@ -110,11 +110,12 @@ senseiContent model =
         , Input.button [] { label = text "sign in", onPress = Just SignIn }
         , if model.isSignedIn then
             paragraph []
-                [ text model.signInResult
+                [ text "signed in"
+                , text model.signInResult
                 ]
 
           else
-            none
+            paragraph [] [ text "not signed in" ]
         ]
 
 
