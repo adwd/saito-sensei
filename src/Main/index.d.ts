@@ -18,11 +18,17 @@ export namespace Elm {
         signInFailure: {
           send(data: string): void
         }
+        requestPushNotification: {
+          subscribe(callback: (data: null) => void): void
+        }
+        pushNotificationPermissionChange: {
+          send(data: string): void
+        }
       };
     }
     export function init(options: {
       node?: HTMLElement | null;
-      flags: null;
+      flags: { pushPermission: string };
     }): Elm.Main.App;
   }
 }
