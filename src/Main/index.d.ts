@@ -7,23 +7,23 @@ export namespace Elm {
     export interface App {
       ports: {
         signIn: {
-          subscribe(callback: (data: null) => void): void
-        }
+          subscribe(callback: (data: null) => void): void;
+        };
         signedIn: {
-          send(data: boolean): void
-        }
+          send(data: boolean): void;
+        };
         signInSuccess: {
-          send(data: string): void
-        }
+          send(data: string): void;
+        };
         signInFailure: {
-          send(data: string): void
-        }
+          send(data: string): void;
+        };
         requestPushNotification: {
-          subscribe(callback: (data: null) => void): void
-        }
+          subscribe(callback: (data: null) => void): void;
+        };
         pushNotificationPermissionChange: {
-          send(data: string): void
-        }
+          send(data: string): void;
+        };
       };
     }
     export function init(options: {
