@@ -36,6 +36,12 @@ port signInSuccess : (String -> msg) -> Sub msg
 port signInFailure : (String -> msg) -> Sub msg
 
 
+port requestPushNotification : () -> Cmd msg
+
+
+port pushNotificationPermissionChange : (String -> msg) -> Sub msg
+
+
 
 ---- MODEL ----
 
@@ -43,12 +49,17 @@ port signInFailure : (String -> msg) -> Sub msg
 type alias Model =
     { isSignedIn : Bool
     , signInResult : String
+    , pushPermission : String
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init () =
-    ( { isSignedIn = False, signInResult = "" }, Cmd.none )
+type alias Flags =
+    { pushPermission : String }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { isSignedIn = False, signInResult = "", pushPermission = flags.pushPermission }, Cmd.none )
 
 
 
@@ -60,6 +71,8 @@ type Msg
     | SignedIn Bool
     | SignInSuccess String
     | SignInFailure String
+    | RequestPushNotification
+    | PushNotificationPermissionChange String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -76,6 +89,12 @@ update msg model =
 
         SignInFailure message ->
             ( { model | signInResult = message }, Cmd.none )
+
+        RequestPushNotification ->
+            ( model, requestPushNotification () )
+
+        PushNotificationPermissionChange permission ->
+            ( { model | pushPermission = permission }, Cmd.none )
 
 
 
@@ -107,6 +126,16 @@ senseiContent model =
     column [ width fill, padding 20 ]
         [ image [ width (px 128), padding 20 ] { src = "/logo.svg", description = "logo" }
         , el [] (text "Saito Sensei")
+        , el [] (text model.pushPermission)
+        , case model.pushPermission of
+            "granted" ->
+                el [] (text "push permission granted")
+
+            "denied" ->
+                none
+
+            _ ->
+                Input.button [] { label = text "receive push notification", onPress = Just RequestPushNotification }
         , Input.button [] { label = text "sign in", onPress = Just SignIn }
         , if model.isSignedIn then
             paragraph []
@@ -125,14 +154,14 @@ senseiContent model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch [ signedIn SignedIn, signInFailure SignInFailure, signInSuccess SignInSuccess ]
+    Sub.batch [ signedIn SignedIn, signInFailure SignInFailure, signInSuccess SignInSuccess, pushNotificationPermissionChange PushNotificationPermissionChange ]
 
 
 
 ---- PROGRAM ----
 
 
-main : Program () Model Msg
+main : Program Flags Model Msg
 main =
     Browser.document
         { init = init
