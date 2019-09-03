@@ -3,8 +3,6 @@ port module Main exposing
     , Msg(..)
     , init
     , main
-    , signInFailure
-    , signInSuccess
     , signedIn
     , update
     , view
@@ -12,12 +10,9 @@ port module Main exposing
 
 import Browser
 import Debug
-import Element exposing (..)
-import Element.Background as Background
-import Element.Border as Border
-import Element.Font as Font
-import Element.Input as Input
-import Html
+import Html exposing (..)
+import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 
 
 
@@ -27,13 +22,7 @@ import Html
 port signIn : () -> Cmd msg
 
 
-port signedIn : (Bool -> msg) -> Sub msg
-
-
-port signInSuccess : (String -> msg) -> Sub msg
-
-
-port signInFailure : (String -> msg) -> Sub msg
+port signedIn : (User -> msg) -> Sub msg
 
 
 port requestPushNotification : () -> Cmd msg
@@ -46,9 +35,17 @@ port pushNotificationPermissionChange : (String -> msg) -> Sub msg
 ---- MODEL ----
 
 
+type alias User =
+    { photoURL : Maybe String }
+
+
+type SignInUser
+    = NotSignIn
+    | SignInUser User
+
+
 type alias Model =
-    { isSignedIn : Bool
-    , signInResult : String
+    { signInUser : SignInUser
     , pushPermission : String
     }
 
@@ -59,7 +56,11 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { isSignedIn = False, signInResult = "", pushPermission = flags.pushPermission }, Cmd.none )
+    ( { signInUser = NotSignIn
+      , pushPermission = flags.pushPermission
+      }
+    , Cmd.none
+    )
 
 
 
@@ -68,9 +69,7 @@ init flags =
 
 type Msg
     = SignIn
-    | SignedIn Bool
-    | SignInSuccess String
-    | SignInFailure String
+    | SignedIn User
     | RequestPushNotification
     | PushNotificationPermissionChange String
 
@@ -81,14 +80,8 @@ update msg model =
         SignIn ->
             ( model, signIn () )
 
-        SignedIn isSignedIn ->
-            ( { model | isSignedIn = isSignedIn }, Cmd.none )
-
-        SignInSuccess message ->
-            ( { model | signInResult = message }, Cmd.none )
-
-        SignInFailure message ->
-            ( { model | signInResult = message }, Cmd.none )
+        SignedIn user ->
+            ( { model | signInUser = SignInUser user }, Cmd.none )
 
         RequestPushNotification ->
             ( model, requestPushNotification () )
@@ -103,48 +96,70 @@ update msg model =
 
 view : Model -> Html.Html Msg
 view model =
-    Element.layout [] (senseiApp model)
+    div
+        [ class "d-flex flex-column"
+        , style "min-height" "100vh"
+        ]
+        [ senseiHeader model
+        , senseiApp model
+        ]
 
 
-senseiApp : Model -> Element Msg
+senseiHeader : Model -> Html.Html Msg
+senseiHeader model =
+    div
+        [ style "top" "0px"
+        , style "z-index" "1"
+        , style "position" "sticky"
+        ]
+        [ div [ class "d-flex flex-justify-between flex-items-center bg-gray-dark text-white " ]
+            [ div [ class "p-3 f1" ] [ text "saito-sensei" ]
+            , div [] []
+            , div [ class "p-1 f2" ]
+                [ case model.signInUser of
+                    NotSignIn ->
+                        button
+                            [ class "btn-link"
+                            , type_ "button"
+                            , onClick SignIn
+                            ]
+                            [ text "sign in" ]
+
+                    SignInUser user ->
+                        case user.photoURL of
+                            Just url ->
+                                img
+                                    [ class "avatar"
+                                    , alt "todo"
+                                    , src url
+                                    , width 48
+                                    , height 48
+                                    ]
+                                    []
+
+                            Nothing ->
+                                div [] []
+                ]
+            ]
+        ]
+
+
+senseiApp : Model -> Html.Html Msg
 senseiApp model =
-    column [ width fill ]
-        [ senseiHeader
-        , senseiContent model
-        ]
-
-
-senseiHeader : Element Msg
-senseiHeader =
-    row [ width fill, padding 20 ]
-        [ el [ centerX ] (text "sensei")
-        ]
-
-
-senseiContent : Model -> Element Msg
-senseiContent model =
-    column [ width fill, padding 20 ]
-        [ image [ width (px 128), padding 20 ] { src = "/logo.svg", description = "logo" }
-        , el [] (text "Saito Sensei")
-        , el [] (text model.pushPermission)
-        , case model.pushPermission of
+    div []
+        [ case model.pushPermission of
             "granted" ->
-                el [] (text "push permission granted")
+                text "push permission granted"
 
             "denied" ->
-                none
+                text "push permission denied"
 
             _ ->
-                Input.button [] { label = text "receive push notification", onPress = Just RequestPushNotification }
-        , Input.button [] { label = text "sign in", onPress = Just SignIn }
-        , if model.isSignedIn then
-            paragraph []
-                [ text "signed in"
-                , text model.signInResult
-                ]
-
-          else
-            paragraph [] [ text "not signed in" ]
+                button
+                    [ type_ "button"
+                    , onClick RequestPushNotification
+                    ]
+                    [ text "recieive push notification" ]
         ]
 
 
@@ -154,7 +169,7 @@ senseiContent model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch [ signedIn SignedIn, signInFailure SignInFailure, signInSuccess SignInSuccess, pushNotificationPermissionChange PushNotificationPermissionChange ]
+    Sub.batch [ signedIn SignedIn, pushNotificationPermissionChange PushNotificationPermissionChange ]
 
 
 

@@ -10,13 +10,7 @@ export namespace Elm {
           subscribe(callback: (data: null) => void): void
         }
         signedIn: {
-          send(data: boolean): void
-        }
-        signInSuccess: {
-          send(data: string): void
-        }
-        signInFailure: {
-          send(data: string): void
+          send(data: { photoURL: string | null }): void
         }
         requestPushNotification: {
           subscribe(callback: (data: null) => void): void
