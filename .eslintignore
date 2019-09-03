@@ -1,0 +1,9 @@
+.cache
+.github
+build
+elm-stuff
+node_modules
+functions/node_modules
+
+firebase-messaging-sw.js
+src/Main/index.d.ts

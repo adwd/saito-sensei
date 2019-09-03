@@ -1,5 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+
 admin.initializeApp();
 
 exports.sendNotificationToNewUser = functions
@@ -12,6 +13,6 @@ exports.sendNotificationToNewUser = functions
         title: 'hello',
         body: 'hello notification',
         click_action: `https://${process.env.GCLOUD_PROJECT}.firebaseapp.com`,
-      }
+      },
     });
   });
