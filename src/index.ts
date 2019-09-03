@@ -2,12 +2,17 @@ import './main.css';
 import { Elm } from './Main';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/messaging';
 
 const firebaseApp = firebase.initializeApp({
   apiKey: "AIzaSyCjJ5bHwwX-cNbJyjepIWfiIWeZ3rUBWOE",
   authDomain: "saito-sensei.firebaseapp.com",
   databaseURL: "https://saito-sensei.firebaseio.com",
   projectId: "saito-sensei",
+  storageBucket: "saito-sensei.appspot.com",
+  messagingSenderId: "953378465391",
+  appId: "1:953378465391:web:08deb336cf8adb76"
 });
 
 // use one-tap sign in
@@ -53,7 +58,7 @@ app.ports.signIn.subscribe(() => {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
+  navigator.serviceWorker.register('/firebase-messaging-sw.js')
     .then(registration => {
       // Registration was successful
       console.log('ServiceWorker registration successful with scope: ', registration);
@@ -66,5 +71,15 @@ if ('serviceWorker' in navigator) {
 app.ports.requestPushNotification.subscribe(() => {
   Notification.requestPermission().then(permission => {
     app.ports.pushNotificationPermissionChange.send(permission);
-  })
-})
+    firebaseApp.messaging().getToken()
+      .then(token => {
+        if (token) {
+          firebaseApp.firestore().collection('fcmTokens').doc(token).set({
+            uid: firebase.auth().currentUser!.uid,
+          })
+          .then(console.log)
+          .catch(console.error);
+        }
+      });
+  });
+});

@@ -1,0 +1,10 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // FCM Tokens:
+    //   - Anyone can write their token.
+    //   - Reading list of tokens is not allowed.
+    match /fcmTokens/{token} {
+      allow crate, write, read;
+    }
+  }
+}
