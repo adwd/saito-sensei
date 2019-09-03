@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "parcel index.html -d build",
-    "build": "parcel build index.html -d build",
+    "build": "npm run build:app && npm run build:functions",
+    "build:app": "parcel build index.html -d build",
+    "build:functions": "cd functions && npm i && cd ..",
     "firebase": "firebase",
     "test": "elm-test",
     "ts-interop": "elm-typescript-interop",
