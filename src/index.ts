@@ -1,18 +1,18 @@
 import './main.css';
-import { Elm } from './Main';
 import * as firebase from 'firebase/app';
+import { Elm } from './Main';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/messaging';
 
 const firebaseApp = firebase.initializeApp({
-  apiKey: "AIzaSyCjJ5bHwwX-cNbJyjepIWfiIWeZ3rUBWOE",
-  authDomain: "saito-sensei.firebaseapp.com",
-  databaseURL: "https://saito-sensei.firebaseio.com",
-  projectId: "saito-sensei",
-  storageBucket: "saito-sensei.appspot.com",
-  messagingSenderId: "953378465391",
-  appId: "1:953378465391:web:08deb336cf8adb76"
+  apiKey: 'AIzaSyCjJ5bHwwX-cNbJyjepIWfiIWeZ3rUBWOE',
+  authDomain: 'saito-sensei.firebaseapp.com',
+  databaseURL: 'https://saito-sensei.firebaseio.com',
+  projectId: 'saito-sensei',
+  storageBucket: 'saito-sensei.appspot.com',
+  messagingSenderId: '953378465391',
+  appId: '1:953378465391:web:08deb336cf8adb76',
 });
 
 // use one-tap sign in
@@ -77,8 +77,8 @@ app.ports.requestPushNotification.subscribe(() => {
           firebaseApp.firestore().collection('fcmTokens').doc(token).set({
             uid: firebase.auth().currentUser!.uid,
           })
-          .then(console.log)
-          .catch(console.error);
+            .then(console.log)
+            .catch(console.error);
         }
       });
   });
