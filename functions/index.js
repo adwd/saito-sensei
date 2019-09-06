@@ -5,10 +5,9 @@ admin.initializeApp();
 
 exports.sendNotificationToNewUser = functions
   .region('asia-northeast1')
-  .firestore
-  .document('fcmTokens/{token}')
-  .onCreate(async snapshot => {
-    await admin.messaging().sendToDevice(snapshot.id, {
+  .firestore.document('fcmTokens/{token}')
+  .onCreate(async (snapshot, context) => {
+    await admin.messaging().sendToDevice(context.params.token, {
       notification: {
         title: 'hello',
         body: 'hello notification',

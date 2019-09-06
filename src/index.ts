@@ -5,7 +5,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/messaging';
 
-const firebaseApp = firebase.initializeApp({
+firebase.initializeApp({
   apiKey: 'AIzaSyCjJ5bHwwX-cNbJyjepIWfiIWeZ3rUBWOE',
   authDomain: 'saito-sensei.firebaseapp.com',
   databaseURL: 'https://saito-sensei.firebaseio.com',
@@ -22,12 +22,12 @@ const firebaseApp = firebase.initializeApp({
 // use it to signInWithCredential
 
 const provider = new firebase.auth.GoogleAuthProvider();
+const db = firebase.firestore();
 
 const app = Elm.Main.init({
   node: document.getElementById('root'),
   flags: {
     pushPermission: Notification.permission,
-    // NOTE: firebase auth status can be passed through flags?
   },
 });
 
@@ -35,17 +35,15 @@ firebase
   .auth()
   .getRedirectResult()
   .then(cred => {
-    console.log('redirect result', cred);
     if (cred.user) {
       app.ports.signedIn.send(cred.user);
     }
   })
   .catch(error => {
-    console.log('redirect error', error);
+    console.error('redirect error', error);
   });
 
 firebase.auth().onAuthStateChanged(user => {
-  console.log(user);
   if (user) {
     app.ports.signedIn.send(user);
   }
@@ -71,24 +69,15 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-app.ports.requestPushNotification.subscribe(() => {
-  Notification.requestPermission().then(permission => {
-    app.ports.pushNotificationPermissionChange.send(permission);
-    firebaseApp
-      .messaging()
-      .getToken()
-      .then(token => {
-        if (token) {
-          firebaseApp
-            .firestore()
-            .collection('fcmTokens')
-            .doc(token)
-            .set({
-              uid: firebase.auth().currentUser!.uid,
-            })
-            .then(console.log)
-            .catch(console.error);
-        }
+app.ports.requestPushNotification.subscribe(async () => {
+  const permission = await Notification.requestPermission();
+  app.ports.pushNotificationPermissionChange.send(permission);
+  const token = await firebase.messaging().getToken();
+  if (token) {
+    db.collection('fcmTokens')
+      .doc(token)
+      .set({
+        uid: firebase.auth().currentUser!.uid,
       });
-  });
+  }
 });
