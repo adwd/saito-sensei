@@ -35,7 +35,7 @@
     "elm-hot": "^1.1.2",
     "elm-test": "^0.19.0-rev6",
     "elm-typescript-interop": "0.0.15",
-    "eslint": "^6.5.1",
+    "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
     "node-elm-compiler": "^5.0.4",
