@@ -25,6 +25,9 @@ port signIn : () -> Cmd msg
 port signedIn : (User -> msg) -> Sub msg
 
 
+port signInFailed : (Error -> msg) -> Sub msg
+
+
 port requestPushNotification : () -> Cmd msg
 
 
@@ -38,10 +41,12 @@ port pushNotificationPermissionChange : (String -> msg) -> Sub msg
 type alias User =
     { photoURL : Maybe String }
 
+type alias Error = String
 
 type SignInUser
-    = NotSignIn
+    = Loading
     | SignInUser User
+    | NotSignIn
 
 
 type alias Model =
@@ -56,7 +61,7 @@ type alias Flags =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { signInUser = NotSignIn
+    ( { signInUser = Loading
       , pushPermission = flags.pushPermission
       }
     , Cmd.none
@@ -70,6 +75,7 @@ init flags =
 type Msg
     = SignIn
     | SignedIn User
+    | SignInFailed Error
     | RequestPushNotification
     | PushNotificationPermissionChange String
 
@@ -82,6 +88,9 @@ update msg model =
 
         SignedIn user ->
             ( { model | signInUser = SignInUser user }, Cmd.none )
+
+        SignInFailed _ ->
+            ( { model | signInUser = NotSignIn }, Cmd.none )
 
         RequestPushNotification ->
             ( model, requestPushNotification () )
@@ -117,6 +126,9 @@ senseiHeader model =
             , div [] []
             , div [ class "p-1 f2" ]
                 [ case model.signInUser of
+                    Loading ->
+                        div [] []
+
                     NotSignIn ->
                         button
                             [ class "btn-link"
@@ -169,7 +181,7 @@ senseiApp model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch [ signedIn SignedIn, pushNotificationPermissionChange PushNotificationPermissionChange ]
+    Sub.batch [ signedIn SignedIn, signInFailed SignInFailed, pushNotificationPermissionChange PushNotificationPermissionChange ]
 
 
 

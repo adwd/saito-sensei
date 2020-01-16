@@ -40,7 +40,7 @@ firebase
     }
   })
   .catch(error => {
-    console.error('redirect error', error);
+    app.ports.signInFailed.send(error.toString());
   });
 
 firebase.auth().onAuthStateChanged(user => {
