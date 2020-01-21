@@ -39,7 +39,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.0",
     "node-elm-compiler": "^5.0.4",
-    "parcel-plugin-static-files-copy": "^2.2.1",
+    "parcel-plugin-static-files-copy": "^2.2.2",
     "typescript": "^3.7.5"
   }
 }
